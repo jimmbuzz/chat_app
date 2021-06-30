@@ -1,4 +1,5 @@
 import 'package:chat_app/screens/auth/sign_in.dart';
+import 'package:chat_app/services/search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/screens/auth/authenticate.dart';
@@ -66,7 +67,7 @@ class HomeBuilder extends StatelessWidget {
 
   void createNewConvo(BuildContext context) {
     Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(
-        builder: (BuildContext context) => SignIn()));
+        builder: (BuildContext context) => Search()));
   }
   Future<String> displayName() async {
     final currentUserUid = FirebaseAuth.instance.currentUser!.uid;
