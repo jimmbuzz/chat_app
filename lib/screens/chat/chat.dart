@@ -25,7 +25,7 @@ class _ChatState extends State<Chat> {
         .instance
         .collection('messages')
         .where('conversation_id', isEqualTo: convId)
-        .orderBy('datetime', descending: true)
+        .orderBy('datetime')
         .snapshots(),
       builder: (context, snapshot){
         return snapshot.hasData ?  ListView.builder(
@@ -40,23 +40,32 @@ class _ChatState extends State<Chat> {
     );
   }
 
-  // addMessage() {
-  //   if (messageEditingController.text.isNotEmpty) {
-  //     Map<String, dynamic> chatMessageMap = {
-  //       "sendBy": Constants.myName,
-  //       "message": messageEditingController.text,
-  //       'time': DateTime
-  //           .now()
-  //           .millisecondsSinceEpoch,
-  //     };
+  addMessage() {
+    if (messageEditingController.text.isNotEmpty) {
+      // Map<String, dynamic> chatMessageMap = {
+      //   "sendBy": Constants.myName,
+      //   "message": messageEditingController.text,
+      //   'time': DateTime
+      //       .now()
+      //       .millisecondsSinceEpoch,
+      // };
+      FirebaseFirestore
+                .instance
+                .collection('messages')
+                .doc().set({
+                  'conversation_id' : convId,
+                  'content' : messageEditingController.text,
+                  'datetime' : DateTime.now(),
+                  'from_id' : FirebaseAuth.instance.currentUser!.uid,
+                  'type' : 'text'
+                });
+      //DatabaseMethods().addMessage(widget.chatRoomId, chatMessageMap);
 
-  //     DatabaseMethods().addMessage(widget.chatRoomId, chatMessageMap);
-
-  //     setState(() {
-  //       messageEditingController.text = "";
-  //     });
-  //   }
-  // }
+      setState(() {
+        messageEditingController.text = "";
+      });
+    }
+  }
 
   // @override
   // void initState() {
@@ -84,8 +93,8 @@ class _ChatState extends State<Chat> {
                   .size
                   .width,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-                color: Color(0x54FFFFFF),
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                color: Colors.indigo[200],//(0x54FFFFFF),
                 child: Row(
                   children: [
                     Expanded(
@@ -104,7 +113,7 @@ class _ChatState extends State<Chat> {
                     SizedBox(width: 16,),
                     GestureDetector(
                       onTap: () {
-                        //addMessage();
+                        addMessage();
                       },
                       child: Container(
                           height: 40,
