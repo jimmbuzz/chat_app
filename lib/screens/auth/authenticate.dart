@@ -13,9 +13,7 @@ class Authenticate extends StatefulWidget {
 }
 
 class _AuthenticateState extends State<Authenticate> {
-  @override
-
-
+ 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   CollectionReference _firestore = FirebaseFirestore.instance.collection('users'); 
@@ -76,8 +74,7 @@ class _AuthenticateState extends State<Authenticate> {
           ]),
       )
     );
-  }
-  //Future<UserCredential> 
+  } 
   void signInWithGoogle() async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();

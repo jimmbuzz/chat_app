@@ -1,4 +1,3 @@
-import 'package:chat_app/models/user.dart';
 import 'package:chat_app/screens/home/home.dart';
 import 'package:chat_app/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -146,21 +145,6 @@ class _SearchState extends State<Search> {
       ),
     );
   }
-
-
-  // getChatRoomId(String a, String b) {
-  //   if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
-  //     return "$b\_$a";
-  //   } else {
-  //     return "$a\_$b";
-  //   }
-  // }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
     bool isEmail = false;
@@ -180,13 +164,12 @@ class _SearchState extends State<Search> {
           children: [
             Container(
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              color: Colors.indigo[200],//Color(0x54FFFFFF),
+              color: Colors.indigo[200],
               child: Row(
                 children: [
                   Expanded(
                     child: TextField(
                       controller: searchEditingController,
-                      //style: simpleTextStyle(),
                       decoration: InputDecoration(
                         hintText: "search username or email...",
                         hintStyle: TextStyle(

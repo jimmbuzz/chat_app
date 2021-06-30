@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:chat_app/services/add_user.dart';
 
 class Chat extends StatefulWidget {
   final String convId;
@@ -14,7 +15,7 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
   final String convId;
   final String convName;
-  //Stream<QuerySnapshot> chats;
+
   TextEditingController messageEditingController = new TextEditingController();
 
   _ChatState({required this.convId, required this.convName});
@@ -42,17 +43,7 @@ class _ChatState extends State<Chat> {
 
   addMessage() async {
     if (messageEditingController.text.isNotEmpty) {
-      // Map<String, dynamic> chatMessageMap = {
-      //   "sendBy": Constants.myName,
-      //   "message": messageEditingController.text,
-      //   'time': DateTime
-      //       .now()
-      //       .millisecondsSinceEpoch,
-      // };
       CollectionReference messages = FirebaseFirestore.instance.collection('messages');
-      // FirebaseFirestore
-      //           .instance
-      //           .collection('messages')
       messages.add({
         'conversation_id' : convId,
         'content' : messageEditingController.text,
@@ -72,23 +63,26 @@ class _ChatState extends State<Chat> {
       });
     }
   }
-
-  // @override
-  // void initState() {
-  //   DatabaseMethods().getChats(widget.chatRoomId).then((val) {
-  //     setState(() {
-  //       chats = val;
-  //     });
-  //   });
-  //   super.initState();
-  // }
-
+  void addUser(BuildContext context) {
+    Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(
+        builder: (BuildContext context) => UserSearch(convId: convId, convName: convName,)));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(convName),
         backgroundColor: Colors.indigo[400],
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(convName),
+            IconButton(
+              onPressed: () => addUser(context),
+              icon: Icon(Icons.add, size: 30)
+            )
+          ]
+        )
       ),
       body: Container(
         child: Stack(
@@ -101,13 +95,12 @@ class _ChatState extends State<Chat> {
                   .width,
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                color: Colors.indigo[200],//(0x54FFFFFF),
+                color: Colors.indigo[200],
                 child: Row(
                   children: [
                     Expanded(
                         child: TextField(
                           controller: messageEditingController,
-                          //style: simpleTextStyle(),
                           decoration: InputDecoration(
                               hintText: "Message ...",
                               hintStyle: TextStyle(
@@ -149,15 +142,12 @@ class _ChatState extends State<Chat> {
       ),
     );
   }
-
 }
-
 class MessageTile extends StatelessWidget {
   final String message;
   final bool sendByMe;
 
   MessageTile({required this.message, required this.sendByMe});
-
 
   @override
   Widget build(BuildContext context) {
@@ -188,8 +178,7 @@ class MessageTile extends StatelessWidget {
               colors: sendByMe ? [
                 const Color(0xff007EF4),
                 const Color(0xff2A75BC)
-              ]
-                  : [
+              ] : [
                 const Color(0x5f555555),
                 const Color(0x5f555555)
               ],

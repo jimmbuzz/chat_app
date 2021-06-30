@@ -8,11 +8,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class HomeBuilder extends StatelessWidget {
   @override
   HomeBuilder();
-  // final String? uid;
-  // final String? displayName;
 
   Widget build(BuildContext context) {
-    //final User firebaseUser = Provider.of<User>(context);
+
     FirebaseAuth _auth = FirebaseAuth.instance;
     
     print(_auth.currentUser!.displayName);
@@ -20,50 +18,52 @@ class HomeBuilder extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.indigo[400],
         automaticallyImplyLeading: false,
-          title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          IconButton(
-              onPressed: () {
-                showDialog(context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    content: Text("Sign Out?"),
-                    actions: [
-                      TextButton(
-                        child: Text("Proceed"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          _auth.signOut().then((res) {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => Authenticate()),
-                            (Route<dynamic> route) => false);
-                          });
-                        },
-                      ),
-                      TextButton(
-                        child: Text("Cancel"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      )
-                    ],
-                  );
-                });
-              },
-              icon: Icon(Icons.arrow_back, size: 30)),
-          showDisplayName(),
-          IconButton(
-              onPressed: () => createNewConvo(context),
-              icon: Icon(Icons.add, size: 30))
-        ],
-      )),
-      body: Container(child: convoList()),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            IconButton(
+                onPressed: () {
+                  showDialog(context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: Text("Sign Out?"),
+                      actions: [
+                        TextButton(
+                          child: Text("Proceed"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            _auth.signOut().then((res) {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => Authenticate()),
+                              (Route<dynamic> route) => false);
+                            });
+                          },
+                        ),
+                        TextButton(
+                          child: Text("Cancel"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        )
+                      ],
+                    );
+                  });
+                },
+              icon: Icon(Icons.arrow_back, size: 30)
+            ),
+            showDisplayName(),
+            IconButton(
+                onPressed: () => createNewConvo(context),
+                icon: Icon(Icons.add, size: 30)
+            )
+          ],
+      )
+    ),
+    body: Container(child: convoList()),
     );
   }
-
   void createNewConvo(BuildContext context) {
     Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(
         builder: (BuildContext context) => Search()));
@@ -105,14 +105,12 @@ class HomeBuilder extends StatelessWidget {
                 return ChatRoomsTile(convId: data.id, convName: data.get('conversation_name'), convLastMessage: data.get('last_message'),);
               },
               itemCount: snapshot.data!.docs.length,
-              //reverse: true,
             );
           }
         },
     );
   }
 }
-
 class ChatRoomsTile extends StatelessWidget {
   final String convId;
   final String convName;
@@ -132,30 +130,11 @@ class ChatRoomsTile extends StatelessWidget {
         ));
       },
       child: Container (
-        //color: Colors.indigo[200],
         padding: EdgeInsets.symmetric(horizontal: 24, vertical: 20), 
         child: Column(
           children: [
-
-          
-            //color: Colors.indigo[200],
-            //padding: EdgeInsets.symmetric(horizontal: 24, vertical: 20),
             Row(
               children: [
-                // Container(
-                //   height: 30,
-                //   width: 30,
-                //   decoration: BoxDecoration(
-                //       color: Colors.amberAccent,
-                //       borderRadius: BorderRadius.circular(30)),
-                //   child: Text(userName.substring(0, 1),
-                //       textAlign: TextAlign.center,
-                //       style: TextStyle(
-                //           color: Colors.white,
-                //           fontSize: 16,
-                //           fontFamily: 'OverpassRegular',
-                //           fontWeight: FontWeight.w300)),
-                // ),
                 SizedBox(
                   width: 12,
                 ),
@@ -196,8 +175,8 @@ class ChatRoomsTile extends StatelessWidget {
             //Center (
             //  child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.indigo)));
           } else {
-            if (snapshot.data.toString().length > 40) {
-              return Text("\""+snapshot.data.toString().substring(0, 36)+"...\"", style: TextStyle(
+            if (snapshot.data.toString().length > 30) {
+              return Text("\""+snapshot.data.toString().substring(0, 25)+"...\"", style: TextStyle(
                 fontSize: 14,
                 color: Colors.black,
                 fontFamily: 'OverpassRegular',
