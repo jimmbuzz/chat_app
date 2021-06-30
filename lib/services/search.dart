@@ -1,9 +1,6 @@
-//import 'package:chatapp/helper/constants.dart';
 import 'package:chat_app/models/user.dart';
 import 'package:chat_app/screens/home/home.dart';
 import 'package:chat_app/services/database.dart';
-//import 'package:chatapp/views/chat.dart';
-//import 'package:chatapp/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +15,6 @@ class _SearchState extends State<Search> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
   TextEditingController searchEditingController = new TextEditingController();
   late QuerySnapshot searchResultSnapshot;
-  //CollectionReference<Map<String, dynamic>> searchResultSnapshot = FirebaseFirestore.instance.collection('users');
 
   bool isLoading = false;
   bool haveUserSearched = false;
@@ -52,57 +48,58 @@ class _SearchState extends State<Search> {
       }
     }
   }
-
   Widget userList(){
     return haveUserSearched ? ListView.builder(
       shrinkWrap: true,
       itemCount: searchResultSnapshot.docs.length,
         itemBuilder: (context, index){
-        print(searchResultSnapshot.docs[index].id);
-        print(searchResultSnapshot.docs[index].get('display_name'));
-        print(searchResultSnapshot.docs[index].get('email'));
-        
-        
-        
         return userTile(
-          
-
-
           searchResultSnapshot.docs[index].id,
           searchResultSnapshot.docs[index].get('display_name'),
           searchResultSnapshot.docs[index].get('email'),
         );
         }) : Container();
   }
-
-  // 1.create a chatroom, send user to the chatroom, other userdetails
-  sendMessage(String uid){
+  createChat(String uid){
     CollectionReference _firestore = FirebaseFirestore.instance.collection('conversations');
     List<String> users = [FirebaseAuth.instance.currentUser!.uid, uid];
-
-    //String chatRoomId = getChatRoomId(Constants.myName,userName);
-
-    // Map<String, dynamic> chatRoom = {
-    //   "users": users,
-    //   "chatRoomId" : chatRoomId,
-    // };
-
-    //databaseMethods.addChatRoom(chatRoom, chatRoomId);
-    
-    _firestore.doc().set({
-      'user_list': users,
-      'conversation_name': 'A Conversation',
-      'last_message': ''
-    });
-    print("Convo id:"+_firestore.doc().id);
-    Navigator.push(context, MaterialPageRoute(
-      builder: (context) => Home(
-        //chatRoomId: ,
-      )
-    ));
-
+    return showDialog(context: context, 
+      builder: (context){
+        TextEditingController _textFieldController = TextEditingController();
+          return AlertDialog(
+            title: Text('Name your conversation'),
+            content: TextField(
+              controller: _textFieldController,
+              decoration: InputDecoration(hintText: "Enter a name..."),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Cancel'),
+                onPressed: () {
+                  Navigator.pop(context);
+                  _textFieldController.clear();
+                },
+              ),
+              TextButton(
+                child: Text('Confirm'),
+                onPressed: () {
+                  _firestore
+                  .doc().set({
+                    'user_list': users,
+                    'conversation_name': _textFieldController.text,
+                    'last_message': ''
+                  });
+                  print(_textFieldController.text);
+                  Navigator.pop(context);
+                  _textFieldController.clear();
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+                },
+              ),
+            ],
+          );
+      }
+    );
   }
-
   Widget userTile(String uid, String userName,String userEmail){
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -130,7 +127,7 @@ class _SearchState extends State<Search> {
           Spacer(),
           GestureDetector(
             onTap: (){
-              sendMessage(uid);
+              createChat(uid);
             },
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
@@ -159,12 +156,10 @@ class _SearchState extends State<Search> {
   //   }
   // }
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-
+  // @override
+  // void initState() {
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +167,6 @@ class _SearchState extends State<Search> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.indigo[400],
-        //automaticallyImplyLeading: false,
       ),
       body:
        isLoading ? Container(
@@ -194,9 +188,9 @@ class _SearchState extends State<Search> {
                       controller: searchEditingController,
                       //style: simpleTextStyle(),
                       decoration: InputDecoration(
-                        hintText: "search username ...",
+                        hintText: "search username or email...",
                         hintStyle: TextStyle(
-                          color: Colors.black,
+                          color: Colors.white,
                           fontSize: 16,
                         ),
                         border: InputBorder.none
@@ -240,4 +234,3 @@ class _SearchState extends State<Search> {
     );
   }
 }
-

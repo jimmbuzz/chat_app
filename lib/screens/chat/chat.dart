@@ -4,20 +4,20 @@ import 'package:flutter/material.dart';
 
 class Chat extends StatefulWidget {
   final String convId;
-
-  Chat({required this.convId});
+  final String convName;
+  Chat({required this.convId, required this.convName});
 
   @override
-  _ChatState createState() => _ChatState(convId: convId);
+  _ChatState createState() => _ChatState(convId: convId, convName: convName);
 }
 
 class _ChatState extends State<Chat> {
   final String convId;
-  
+  final String convName;
   //Stream<QuerySnapshot> chats;
   TextEditingController messageEditingController = new TextEditingController();
 
-  _ChatState({required this.convId});
+  _ChatState({required this.convId, required this.convName});
 
   Widget chatMessages(){
     return StreamBuilder<QuerySnapshot>(
@@ -40,7 +40,7 @@ class _ChatState extends State<Chat> {
     );
   }
 
-  addMessage() {
+  addMessage() async {
     if (messageEditingController.text.isNotEmpty) {
       // Map<String, dynamic> chatMessageMap = {
       //   "sendBy": Constants.myName,
@@ -49,18 +49,24 @@ class _ChatState extends State<Chat> {
       //       .now()
       //       .millisecondsSinceEpoch,
       // };
-      FirebaseFirestore
-                .instance
-                .collection('messages')
-                .doc().set({
-                  'conversation_id' : convId,
-                  'content' : messageEditingController.text,
-                  'datetime' : DateTime.now(),
-                  'from_id' : FirebaseAuth.instance.currentUser!.uid,
-                  'type' : 'text'
-                });
-      //DatabaseMethods().addMessage(widget.chatRoomId, chatMessageMap);
-
+      CollectionReference messages = FirebaseFirestore.instance.collection('messages');
+      // FirebaseFirestore
+      //           .instance
+      //           .collection('messages')
+      messages.add({
+        'conversation_id' : convId,
+        'content' : messageEditingController.text,
+        'datetime' : DateTime.now(),
+        'from_id' : FirebaseAuth.instance.currentUser!.uid,
+        'type' : 'text'
+      }).then((value) => 
+        FirebaseFirestore
+        .instance
+        .collection('conversations')
+        .doc(convId)
+        .update({'last_message' : value.id})
+      );
+      
       setState(() {
         messageEditingController.text = "";
       });
@@ -81,6 +87,7 @@ class _ChatState extends State<Chat> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(convName),
         backgroundColor: Colors.indigo[400],
       ),
       body: Container(

@@ -30,15 +30,15 @@ class DatabaseMethods {
     });
   }
 
-  getUserInfo(String email) async {
-    return FirebaseFirestore.instance
-        .collection("users")
-        .where("userEmail", isEqualTo: email)
-        .get()
-        .catchError((e) {
-      print(e.toString());
-    });
-  }
+  // getUserInfo(String email) async {
+  //   return FirebaseFirestore.instance
+  //       .collection("users")
+  //       .where("userEmail", isEqualTo: email)
+  //       .get()
+  //       .catchError((e) {
+  //     print(e.toString());
+  //   });
+  // }
 
   searchByName(String searchField) {
     return FirebaseFirestore.instance
@@ -62,31 +62,31 @@ class DatabaseMethods {
   //   });
   // }
 
-  getChats(String chatRoomId) async{
-    return FirebaseFirestore.instance
-        .collection("chatRoom")
-        .doc(chatRoomId)
-        .collection("chats")
-        .orderBy('time')
-        .snapshots();
-  }
+  // getChats(String chatRoomId) async{
+  //   return FirebaseFirestore.instance
+  //       .collection("chatRoom")
+  //       .doc(chatRoomId)
+  //       .collection("chats")
+  //       .orderBy('time')
+  //       .snapshots();
+  // }
 
 
-  Future<void> addMessage(String chatRoomId, chatMessageData)async {
+  // Future<void> addMessage(String chatRoomId, chatMessageData)async {
 
-    FirebaseFirestore.instance.collection("chatRoom")
-        .doc(chatRoomId)
-        .collection("chats")
-        .add(chatMessageData).catchError((e){
-          print(e.toString());
-    });
-  }
+  //   FirebaseFirestore.instance.collection("chatRoom")
+  //       .doc(chatRoomId)
+  //       .collection("chats")
+  //       .add(chatMessageData).catchError((e){
+  //         print(e.toString());
+  //   });
+  // }
 
-  getUserChats(String itIsMyName) async {
-    return await FirebaseFirestore.instance
-        .collection("chatRoom")
-        .where('users', arrayContains: itIsMyName)
-        .snapshots();
-  }
+  // getUserChats(String itIsMyName) async {
+  //   return await FirebaseFirestore.instance
+  //       .collection("chatRoom")
+  //       .where('users', arrayContains: itIsMyName)
+  //       .snapshots();
+  // }
 
 }

@@ -91,6 +91,7 @@ class ChatRoom extends StatelessWidget {
                 //DocumentSnapshot lastMessage = FirebaseFirestore.instance.collection('messages').get(data.get('last_message'));
                 return ConversationBox(
                   chatRoomName: data.get('conversation_name'),
+                  chatRoomLastMessage : data.get('last_message'),
                   //chatRoomLastMessage: lastMessage(snapshot.data),
                 );
               },
@@ -110,9 +111,10 @@ class ChatRoom extends StatelessWidget {
 class ConversationBox extends StatelessWidget {
   //final String userName;
   final String chatRoomName;
+  final String chatRoomLastMessage;
   //final String chatRoomLastMessage;
 
-  ConversationBox({required this.chatRoomName});//, required this.chatRoomLastMessage});
+  ConversationBox({required this.chatRoomName, required this.chatRoomLastMessage});//, required this.chatRoomLastMessage});
 
   @override
   Widget build(BuildContext context) {
@@ -133,11 +135,7 @@ class ConversationBox extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              //height: 30,
-              //width: 30,
-              // decoration: BoxDecoration(
-              //     color: Colors.amberAccent,
-              //     borderRadius: BorderRadius.circular(30)),
+              
               child: Text(chatRoomName,
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -146,17 +144,19 @@ class ConversationBox extends StatelessWidget {
                       fontFamily: 'OverpassRegular',
                       fontWeight: FontWeight.w300)),
             ),
-            // SizedBox(width: 12,height: 20,),
-            // Container(child: Text("\""+chatRoomLastMessage+"\"",
-            //       //textAlign: TextAlign.center,
-            //       style: TextStyle(
-            //           color: Colors.black,
-            //           fontSize: 16,
-            //           fontFamily: 'OverpassRegular',
-            //           fontWeight: FontWeight.w300)))
-            // SizedBox(
-            //   width: 12,
-            // ),
+             SizedBox(width: 12,height: 20,),
+             
+            showLastMessage(chatRoomLastMessage),
+                  //textAlign: TextAlign.center,
+                  //  style: TextStyle(
+                  //      color: Colors.black,
+                  //      fontSize: 16,
+                  //      fontFamily: 'OverpassRegular',
+                  //      fontWeight: FontWeight.w300)))
+             
+             SizedBox(
+               width: 12,
+             ),
             // Text(userName,
             //     textAlign: TextAlign.start,
             //     style: TextStyle(
@@ -169,6 +169,27 @@ class ConversationBox extends StatelessWidget {
       ),
     );
   }
+  Future<String> displayMessage(String messageId) async {
+    //final lastMessageId = messageId;
+    final DocumentSnapshot docSnap = await FirebaseFirestore.instance.collection('messages').doc(messageId).get();
+    return docSnap.get('content');
+  }
+  Widget showLastMessage(String messageId) {
+    //final lastMessageId = messageId;
+    return FutureBuilder(
+      future: displayMessage(messageId),
+        builder: (context, snapshot) {
+          if(!snapshot.hasData) {
+            return Center (
+              child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.indigo)));
+          } else {
+            return Text(snapshot.data.toString(), style: TextStyle(
+              fontSize: 16,
+              color: Colors.white,
+            ));
+          }
+        },
+    );
+  }
 }
-//class 
 

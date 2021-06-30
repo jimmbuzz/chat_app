@@ -1,12 +1,9 @@
-import 'package:chat_app/screens/auth/sign_in.dart';
 import 'package:chat_app/screens/chat/chat.dart';
 import 'package:chat_app/services/search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/screens/auth/authenticate.dart';
-import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:chat_app/providers/newMessageProvider.dart';
 
 class HomeBuilder extends StatelessWidget {
   @override
@@ -105,7 +102,7 @@ class HomeBuilder extends StatelessWidget {
               padding: EdgeInsets.all(10.0),
               itemBuilder: (context, index){
                 DocumentSnapshot data = snapshot.data!.docs[index];
-                return ChatRoomsTile(convId: data.id, convName: data.get('conversation_name'),);
+                return ChatRoomsTile(convId: data.id, convName: data.get('conversation_name'), convLastMessage: data.get('last_message'),);
               },
               itemCount: snapshot.data!.docs.length,
               //reverse: true,
@@ -117,11 +114,11 @@ class HomeBuilder extends StatelessWidget {
 }
 
 class ChatRoomsTile extends StatelessWidget {
-  final String userName = 'joe biden';
   final String convId;
   final String convName;
+  final String convLastMessage;
 
-  ChatRoomsTile({required this.convId, required this.convName});
+  ChatRoomsTile({required this.convId, required this.convName, required this.convLastMessage});
 
   @override
   Widget build(BuildContext context) {
@@ -130,41 +127,92 @@ class ChatRoomsTile extends StatelessWidget {
         Navigator.push(context, MaterialPageRoute(
           builder: (context) => Chat(
             convId: convId,
+            convName: convName,
           )
         ));
       },
-      child: Container(
-        color: Colors.black26,
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        child: Row(
+      child: Container (
+        //color: Colors.indigo[200],
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 20), 
+        child: Column(
           children: [
-            Container(
-              height: 30,
-              width: 30,
-              decoration: BoxDecoration(
-                  color: Colors.amberAccent,
-                  borderRadius: BorderRadius.circular(30)),
-              child: Text(userName.substring(0, 1),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontFamily: 'OverpassRegular',
-                      fontWeight: FontWeight.w300)),
+
+          
+            //color: Colors.indigo[200],
+            //padding: EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+            Row(
+              children: [
+                // Container(
+                //   height: 30,
+                //   width: 30,
+                //   decoration: BoxDecoration(
+                //       color: Colors.amberAccent,
+                //       borderRadius: BorderRadius.circular(30)),
+                //   child: Text(userName.substring(0, 1),
+                //       textAlign: TextAlign.center,
+                //       style: TextStyle(
+                //           color: Colors.white,
+                //           fontSize: 16,
+                //           fontFamily: 'OverpassRegular',
+                //           fontWeight: FontWeight.w300)),
+                // ),
+                SizedBox(
+                  width: 12,
+                ),
+                Text(convName,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontFamily: 'OverpassRegular',
+                        fontWeight: FontWeight.w400
+                      )
+                    ),
+              ],
             ),
-            SizedBox(
-              width: 12,
-            ),
-            Text(convName,
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontFamily: 'OverpassRegular',
-                    fontWeight: FontWeight.w300))
+            Row(children: [
+              SizedBox(
+                width: 16,
+              ),
+              showLastMessage(convLastMessage),
+            ],)
           ],
         ),
       ),
+    );
+  }
+  Future<String> displayMessage(String messageId) async {
+    //final lastMessageId = messageId;
+    final DocumentSnapshot docSnap = await FirebaseFirestore.instance.collection('messages').doc(messageId).get();
+    return docSnap.get('content');
+  }
+  Widget showLastMessage(String messageId) {
+    //final lastMessageId = messageId;
+    return FutureBuilder(
+      future: displayMessage(messageId),
+        builder: (context, snapshot) {
+          if(!snapshot.hasData) {
+            return Container();
+            //Center (
+            //  child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.indigo)));
+          } else {
+            if (snapshot.data.toString().length > 40) {
+              return Text("\""+snapshot.data.toString().substring(0, 36)+"...\"", style: TextStyle(
+                fontSize: 14,
+                color: Colors.black,
+                fontFamily: 'OverpassRegular',
+                fontWeight: FontWeight.w300
+              ));
+            } else {
+              return Text("\""+snapshot.data.toString()+"\"", style: TextStyle(
+                fontSize: 14,
+                color: Colors.black,
+                fontFamily: 'OverpassRegular',
+                fontWeight: FontWeight.w300
+              ));
+            }
+          }
+        },
     );
   }
 }
