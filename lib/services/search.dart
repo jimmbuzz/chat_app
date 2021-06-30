@@ -1,9 +1,11 @@
 //import 'package:chatapp/helper/constants.dart';
 import 'package:chat_app/models/user.dart';
+import 'package:chat_app/screens/home/home.dart';
 import 'package:chat_app/services/database.dart';
 //import 'package:chatapp/views/chat.dart';
 //import 'package:chatapp/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Search extends StatefulWidget {
@@ -26,7 +28,6 @@ class _SearchState extends State<Search> {
       setState(() {
         isLoading = true;
       });
-      //validator: (value)
       if (!isEmail) {
         await databaseMethods.searchByName(searchEditingController.text)
           .then((snapshot){
@@ -57,35 +58,52 @@ class _SearchState extends State<Search> {
       shrinkWrap: true,
       itemCount: searchResultSnapshot.docs.length,
         itemBuilder: (context, index){
+        print(searchResultSnapshot.docs[index].id);
+        print(searchResultSnapshot.docs[index].get('display_name'));
+        print(searchResultSnapshot.docs[index].get('email'));
+        
+        
+        
         return userTile(
+          
+
+
+          searchResultSnapshot.docs[index].id,
           searchResultSnapshot.docs[index].get('display_name'),
           searchResultSnapshot.docs[index].get('email'),
         );
         }) : Container();
   }
 
-  /// 1.create a chatroom, send user to the chatroom, other userdetails
-  // sendMessage(String userName){
-  //   List<String> users = [Constants.myName,userName];
+  // 1.create a chatroom, send user to the chatroom, other userdetails
+  sendMessage(String uid){
+    CollectionReference _firestore = FirebaseFirestore.instance.collection('conversations');
+    List<String> users = [FirebaseAuth.instance.currentUser!.uid, uid];
 
-  //   String chatRoomId = getChatRoomId(Constants.myName,userName);
+    //String chatRoomId = getChatRoomId(Constants.myName,userName);
 
-  //   Map<String, dynamic> chatRoom = {
-  //     "users": users,
-  //     "chatRoomId" : chatRoomId,
-  //   };
+    // Map<String, dynamic> chatRoom = {
+    //   "users": users,
+    //   "chatRoomId" : chatRoomId,
+    // };
 
-  //   databaseMethods.addChatRoom(chatRoom, chatRoomId);
+    //databaseMethods.addChatRoom(chatRoom, chatRoomId);
+    
+    _firestore.doc().set({
+      'user_list': users,
+      'conversation_name': 'A Conversation',
+      'last_message': ''
+    });
+    print("Convo id:"+_firestore.doc().id);
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) => Home(
+        //chatRoomId: ,
+      )
+    ));
 
-  //   Navigator.push(context, MaterialPageRoute(
-  //     builder: (context) => Chat(
-  //       chatRoomId: chatRoomId,
-  //     )
-  //   ));
+  }
 
-  // }
-
-  Widget userTile(String userName,String userEmail){
+  Widget userTile(String uid, String userName,String userEmail){
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
@@ -112,7 +130,7 @@ class _SearchState extends State<Search> {
           Spacer(),
           GestureDetector(
             onTap: (){
-              //sendMessage(userName);
+              sendMessage(uid);
             },
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
@@ -133,13 +151,13 @@ class _SearchState extends State<Search> {
   }
 
 
-  getChatRoomId(String a, String b) {
-    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
-      return "$b\_$a";
-    } else {
-      return "$a\_$b";
-    }
-  }
+  // getChatRoomId(String a, String b) {
+  //   if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+  //     return "$b\_$a";
+  //   } else {
+  //     return "$a\_$b";
+  //   }
+  // }
 
   @override
   void initState() {

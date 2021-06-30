@@ -31,7 +31,7 @@ class _AuthenticateState extends State<Authenticate> {
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children : <Widget>[
             Padding(
               padding: EdgeInsets.all(10.0),
-              child: Text("Fan Page",
+              child: Text("Chat App",
                 style: TextStyle (
                   fontWeight: FontWeight.bold,
                   fontSize: 30,
