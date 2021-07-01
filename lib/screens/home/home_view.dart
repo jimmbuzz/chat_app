@@ -1,5 +1,5 @@
 import 'package:chat_app/screens/chat/chat.dart';
-import 'package:chat_app/services/search.dart';
+import 'package:chat_app/screens/search/search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/screens/auth/authenticate.dart';
@@ -161,19 +161,15 @@ class ChatRoomsTile extends StatelessWidget {
     );
   }
   Future<String> displayMessage(String messageId) async {
-    //final lastMessageId = messageId;
     final DocumentSnapshot docSnap = await FirebaseFirestore.instance.collection('messages').doc(messageId).get();
     return docSnap.get('content');
   }
   Widget showLastMessage(String messageId) {
-    //final lastMessageId = messageId;
     return FutureBuilder(
       future: displayMessage(messageId),
         builder: (context, snapshot) {
           if(!snapshot.hasData) {
             return Container();
-            //Center (
-            //  child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.indigo)));
           } else {
             if (snapshot.data.toString().length > 30) {
               return Text("\""+snapshot.data.toString().substring(0, 25)+"...\"", style: TextStyle(

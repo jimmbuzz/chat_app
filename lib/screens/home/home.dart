@@ -16,7 +16,7 @@ class HomeState extends State<Home> {
     
     return Scaffold(
         body: (_auth.currentUser != null)
-            ? HomeBuilder()//uid: firebaseUser.uid, displayName: firebaseUser.displayName)
+            ? HomeBuilder()
             : SignIn());
   }
 }

@@ -1,3 +1,4 @@
+import 'package:chat_app/screens/chat/chat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,11 +9,6 @@ class ChatRoom extends StatelessWidget {
   @override 
   ChatRoom({this.uid});
   final String? uid;
-//   _ChatRoomState createState() => _ChatRoomState();
-// }
-
-// class _ChatRoomState extends State<ChatRoom> {
-//   //Stream chatRooms;
 
   Widget build(BuildContext context) {
     FirebaseAuth _auth = FirebaseAuth.instance;
@@ -59,7 +55,6 @@ class ChatRoom extends StatelessWidget {
         ]
       ),
       body: Container(
-        
         child: Stack(
           alignment: AlignmentDirectional.bottomCenter,
           children: [
@@ -74,9 +69,7 @@ class ChatRoom extends StatelessWidget {
       stream: FirebaseFirestore
         .instance
         .collection('conversations')
-        //.orderBy('timeStamp', descending: true)
         .snapshots(),
-      
         builder: (context, snapshot) {
           if(!snapshot.hasData) {
             return Center (
@@ -88,11 +81,10 @@ class ChatRoom extends StatelessWidget {
               padding: EdgeInsets.all(10.0),
               itemBuilder: (context, index){
                 DocumentSnapshot data = snapshot.data!.docs[index];
-                //DocumentSnapshot lastMessage = FirebaseFirestore.instance.collection('messages').get(data.get('last_message'));
                 return ConversationBox(
+                  chatRoomId: data.id,
                   chatRoomName: data.get('conversation_name'),
                   chatRoomLastMessage : data.get('last_message'),
-                  //chatRoomLastMessage: lastMessage(snapshot.data),
                 );
               },
               
@@ -103,39 +95,31 @@ class ChatRoom extends StatelessWidget {
         },
     );
   }
-  // Future<String> lastMessage(QuerySnapshot<Object?>? data) async {
-  //   final string conversationId = ;
-    
-  // }
 }
 class ConversationBox extends StatelessWidget {
-  //final String userName;
   final String chatRoomName;
   final String chatRoomLastMessage;
-  //final String chatRoomLastMessage;
+  final String chatRoomId;
 
-  ConversationBox({required this.chatRoomName, required this.chatRoomLastMessage});//, required this.chatRoomLastMessage});
+  ConversationBox({required this.chatRoomName, required this.chatRoomLastMessage, required this.chatRoomId});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        // Navigator.push(context, MaterialPageRoute(
-        //   builder: (context) => Chat(
-        //     chatRoomId: chatRoomId,
-        //   )
-        // ));
-        //print (chatRoomLastMessage);
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) => Chat(
+            convId: chatRoomId, 
+            convName: chatRoomName,
+          )
+        ));
       },
       child: Container(
-        //color: Colors.indigo[200],
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        //decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-        
         child: Row(
           children: [
             Container(
-              
+
               child: Text(chatRoomName,
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -144,38 +128,19 @@ class ConversationBox extends StatelessWidget {
                       fontFamily: 'OverpassRegular',
                       fontWeight: FontWeight.w300)),
             ),
-             SizedBox(width: 12,height: 20,),
-             
+            SizedBox(width: 12,height: 20,),
             showLastMessage(chatRoomLastMessage),
-                  //textAlign: TextAlign.center,
-                  //  style: TextStyle(
-                  //      color: Colors.black,
-                  //      fontSize: 16,
-                  //      fontFamily: 'OverpassRegular',
-                  //      fontWeight: FontWeight.w300)))
-             
-             SizedBox(
-               width: 12,
-             ),
-            // Text(userName,
-            //     textAlign: TextAlign.start,
-            //     style: TextStyle(
-            //         color: Colors.white,
-            //         fontSize: 16,
-            //         fontFamily: 'OverpassRegular',
-            //         fontWeight: FontWeight.w300))
+            SizedBox(width: 12,),
           ],
         ),
       ),
     );
   }
   Future<String> displayMessage(String messageId) async {
-    //final lastMessageId = messageId;
     final DocumentSnapshot docSnap = await FirebaseFirestore.instance.collection('messages').doc(messageId).get();
     return docSnap.get('content');
   }
   Widget showLastMessage(String messageId) {
-    //final lastMessageId = messageId;
     return FutureBuilder(
       future: displayMessage(messageId),
         builder: (context, snapshot) {

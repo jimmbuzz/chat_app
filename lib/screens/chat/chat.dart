@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:chat_app/services/add_user.dart';
+import 'package:chat_app/screens/search/add_user.dart';
 
 class Chat extends StatefulWidget {
   final String convId;
@@ -30,6 +30,7 @@ class _ChatState extends State<Chat> {
         .snapshots(),
       builder: (context, snapshot){
         return snapshot.hasData ?  ListView.builder(
+          padding: const EdgeInsets.only(bottom: 60),          
           itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index){
               return MessageTile(
@@ -40,7 +41,6 @@ class _ChatState extends State<Chat> {
       },
     );
   }
-
   addMessage() async {
     if (messageEditingController.text.isNotEmpty) {
       CollectionReference messages = FirebaseFirestore.instance.collection('messages');
@@ -94,7 +94,7 @@ class _ChatState extends State<Chat> {
                   .size
                   .width,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 6),
                 color: Colors.indigo[200],
                 child: Row(
                   children: [
