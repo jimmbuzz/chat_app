@@ -1,9 +1,9 @@
 # chat_app
-Raleigh Curns
-CSC 4360 - Durham 
-6/30/2021 
-Assignment 2: friendly chat app
-
+Raleigh Curns  
+CSC 4360 - Durham   
+6/30/2021  
+Assignment 2: friendly chat app  
+  
 A new Flutter project.
 
 ## Android Installation
