@@ -1,3 +1,4 @@
+import 'package:chat_app/screens/auth/authenticate.dart';
 import 'package:chat_app/screens/auth/sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,6 @@ class HomeState extends State<Home> {
     return Scaffold(
         body: (_auth.currentUser != null)
             ? HomeBuilder()
-            : SignIn());
+            : Authenticate());
   }
 }
