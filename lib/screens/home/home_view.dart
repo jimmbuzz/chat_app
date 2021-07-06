@@ -1,6 +1,8 @@
 import 'dart:async';
 //import 'dart:js';
 
+import 'package:chat_app/screens/auth/profile.dart';
+import 'package:chat_app/screens/auth/settings.dart';
 import 'package:chat_app/screens/chat/chat.dart';
 import 'package:chat_app/screens/search/search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -110,7 +112,10 @@ class HomeBuilder extends StatelessWidget {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                Navigator.pop(context);
+                //Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ProfilePage()));
+                //Navigator.pop(context);
               },
             ),
             ListTile(
@@ -119,6 +124,8 @@ class HomeBuilder extends StatelessWidget {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SettingsPage()));
                 Navigator.pop(context);
               },
             ),

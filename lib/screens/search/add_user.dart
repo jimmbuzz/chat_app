@@ -55,6 +55,7 @@ class _UserSearchState extends State<UserSearch> {
   Widget userList(){
     return haveUserSearched ? ListView.builder(
       shrinkWrap: true,
+      padding: const EdgeInsets.only(top: 80), 
       itemCount: searchResultSnapshot.docs.length,
         itemBuilder: (context, index){
         return userTile(
@@ -158,8 +159,9 @@ class _UserSearchState extends State<UserSearch> {
           child: CircularProgressIndicator(),
         ),
       ) :  Container(
-        child: Column(
+        child: Stack(
           children: [
+            userList(),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               color: Colors.indigo[200],
@@ -208,7 +210,7 @@ class _UserSearchState extends State<UserSearch> {
                 ],
               ),
             ),
-            userList()
+            
           ],
         ),
       ),
