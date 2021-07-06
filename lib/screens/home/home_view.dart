@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/screens/auth/authenticate.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class HomeBuilder extends StatelessWidget {
   @override
@@ -186,9 +187,30 @@ class HomeBuilder extends StatelessWidget {
           return Container(
             child: Icon(Icons.account_circle_outlined)
           );
-        } else {
+        // } else if (snapshot.hasData.toString().isEmpty) {
+        //   return Container(
+        //     child: Icon(Icons.account_circle_outlined)
+        //     //child: Image.network(snapshot.data.toString())
+        //   );
+        } else if (snapshot.data.toString().isEmpty) {
+          print("Deboog: "+snapshot.data.toString().isEmpty.toString());
+          String url = snapshot.data.toString();
           return Container(
-            child: Image.network(snapshot.data.toString())
+            //child: Icon(Icons.account_circle_outlined)
+            
+            
+            child: Icon(Icons.account_circle_outlined)
+          
+          );
+        } else {
+          String url = snapshot.data.toString();
+          print("Debag: "+snapshot.data.toString());
+          return Container(
+            child: CachedNetworkImage(
+              imageUrl: url,
+              placeholder: (context,url) => Icon(Icons.account_circle_outlined),
+              errorWidget: (context,url,error) => Icon(Icons.account_circle_outlined),
+            )
           );
         }
       }

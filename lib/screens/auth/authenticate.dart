@@ -73,6 +73,16 @@ class _AuthenticateState extends State<Authenticate> {
                     child: Text('Sign in with Email'),
                   ),
             ),
+            Padding(
+              padding: EdgeInsets.all(10.0),
+                child: ElevatedButton(
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.indigo)),
+                    onPressed: () {
+                      signInAnon();
+                    },
+                    child: Text('Sign in Anonymously'),
+                  ),
+            ),
           ]),
       )
     );
@@ -105,7 +115,6 @@ class _AuthenticateState extends State<Authenticate> {
               _firestore.doc(_auth.currentUser!.uid).set({
                 'email' : _auth.currentUser!.email,
                 'display_name' : _auth.currentUser!.displayName,
-                'isAdmin': false, 
                 'regDateTime' : DateTime.now(),
                 'profile_pic' : _auth.currentUser!.photoURL,
               }).then((value) => Navigator.pushReplacement (
@@ -118,6 +127,19 @@ class _AuthenticateState extends State<Authenticate> {
         //print(result.user!.uid);
       //Timer(Duration(milliseconds: 500), () =>
      //);
+    });
+  }
+  void signInAnon() async {
+    _auth.signInAnonymously().then((result) {
+      _firestore.doc(_auth.currentUser!.uid).set({
+        'email' : '',
+        'display_name': 'Anon',
+        'regDateTime' : DateTime.now(),
+        'profile_pic' : '',
+      }).then((value) => Navigator.pushReplacement (
+        context,
+        MaterialPageRoute(builder: (context) => Home()),
+      ));
     });
   }
 }
