@@ -10,7 +10,7 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-
+  //_SearchState();
   DatabaseMethods databaseMethods = new DatabaseMethods();
   TextEditingController searchEditingController = new TextEditingController();
   late QuerySnapshot searchResultSnapshot;
@@ -48,9 +48,9 @@ class _SearchState extends State<Search> {
     }
   }
   Widget userList(){
-    print("Length: "+searchResultSnapshot.docs.length.toString());
     return haveUserSearched ? ListView.builder(
       shrinkWrap: true,
+      padding: const EdgeInsets.only(top: 80),
       itemCount: searchResultSnapshot.docs.length,
         itemBuilder: (context, index){
         return userTile(

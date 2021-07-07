@@ -1,3 +1,4 @@
+import 'package:chat_app/screens/auth/register.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -21,9 +22,12 @@ class _SettingsPageState extends State<SettingsPage> {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-  var currentUser = FirebaseAuth.instance.currentUser;
+  User? currentUser = FirebaseAuth.instance.currentUser;
+  //bool anon = currentUser!.isAnonymous;
+  
   @override
   Widget build(BuildContext context) {
+    bool anon = currentUser!.isAnonymous;
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -33,7 +37,7 @@ class _SettingsPageState extends State<SettingsPage> {
         body: FutureBuilder<DocumentSnapshot>(
             future: users.doc(currentUser!.uid).get(),
             builder: (context, snapshot) {
-              if (snapshot.hasError) {
+              if (snapshot.hasError) { 
                 return Text("Something went wrong");
               }
 
@@ -48,7 +52,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Row(
+                      anon == false ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
@@ -99,8 +103,8 @@ class _SettingsPageState extends State<SettingsPage> {
                             icon: Icon(Icons.check),
                           )
                         ],
-                      ),
-                      Row(
+                      ) : Container(),
+                      anon == false ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
@@ -113,24 +117,33 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                           ),
                           IconButton(
-                              icon: Icon(Icons.check),
-                              onPressed: () async {
-                                String pwd = pwdController.text.trim();
-                                if (pwd.isNotEmpty && pwd.length > 6) {
-                                  String b = await updatePassword(
-                                      pwdController.text.trim());
-                                  if (b.isNotEmpty) {
-                                    print("User values not changed");
-                                    showAlertDialog(b);
-                                    return;
-                                  }
-                                } else {
-                                  showAlertDialog('Not a Valid Password!');
+                            icon: Icon(Icons.check),
+                            onPressed: () async {
+                              String pwd = pwdController.text.trim();
+                              if (pwd.isNotEmpty && pwd.length > 6) {
+                                String b = await updatePassword(
+                                    pwdController.text.trim());
+                                if (b.isNotEmpty) {
+                                  print("User values not changed");
+                                  showAlertDialog(b);
                                   return;
                                 }
-                                showAlertDialog('Success! Password updated');
-                              })
+                              } else {
+                                showAlertDialog('Not a Valid Password!');
+                                return;
+                              }
+                              showAlertDialog('Success! Password updated');
+                            }
+                          )
                         ],
+                      ) : ElevatedButton(
+                        child: Text('Register'),
+                        style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.indigo)),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => EmailSignUp()));
+                        }
                       ),
                       //Unused but may be repurposed in the future...
                       // Row(
