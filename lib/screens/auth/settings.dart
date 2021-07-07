@@ -367,14 +367,11 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Icon(Icons.account_circle_outlined, size: 75, color: Colors.indigo[100],)
           );
         } else if (snapshot.data.toString().isEmpty) {
-          print("Deboog: "+snapshot.data.toString().isEmpty.toString());
-          String url = snapshot.data.toString();
           return Container(
             child: Icon(Icons.account_circle_outlined, size: 75, color: Colors.indigo[100],)
           );
         } else {
           String url = snapshot.data.toString();
-          print("Debag: "+snapshot.data.toString());
           return Container(
             constraints: BoxConstraints.expand(),
             child: CachedNetworkImage(

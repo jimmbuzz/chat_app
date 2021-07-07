@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:chat_app/screens/auth/register.dart';
 import 'package:chat_app/screens/auth/sign_in.dart';
 import 'package:chat_app/screens/home/home.dart';

@@ -75,9 +75,6 @@ class _ChatState extends State<Chat> {
     Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(
         builder: (BuildContext context) => UserSearch(convId: convId, convName: convName,)));
   }
-
-  
-
   @override
   Widget build(BuildContext context) {
     _loadInterstitialAd();

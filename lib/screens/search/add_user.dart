@@ -151,6 +151,7 @@ class _UserSearchState extends State<UserSearch> {
     bool isEmail = false;
     return Scaffold(
       appBar: AppBar(
+        title: Text("Add another user"),
         backgroundColor: Colors.indigo[400],
       ),
       body:

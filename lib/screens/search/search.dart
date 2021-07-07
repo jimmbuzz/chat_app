@@ -151,6 +151,7 @@ class _SearchState extends State<Search> {
     bool isEmail = false;
     return Scaffold(
       appBar: AppBar(
+        title: Text("Start a conversation"),
         backgroundColor: Colors.indigo[400],
       ),
       body:
