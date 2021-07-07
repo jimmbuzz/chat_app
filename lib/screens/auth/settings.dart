@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/screens/auth/register.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -209,10 +210,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 decoration: BoxDecoration(
                   color: Colors.indigo[400],
                 ),
-                child: Text('Message Board App'),
+                child: profilePic()
               ),
               ListTile(
-                title: Text('Message Boards'),
+                title: Text('Chats'),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.push(
@@ -349,5 +350,43 @@ class _SettingsPageState extends State<SettingsPage> {
         });
       } 
     }
+  }
+  Future<String> profilePicURL() async {
+    //String? photoURL = FirebaseAuth.instance.currentUser!.photoURL;
+    final currentUserUid = FirebaseAuth.instance.currentUser!.uid;
+    final DocumentSnapshot docSnap = await FirebaseFirestore.instance.collection('users').doc(currentUserUid).get();
+    return docSnap.get('profile_pic');
+  }
+  Widget profilePic() {
+    return FutureBuilder(
+      future: profilePicURL(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container(
+            constraints: BoxConstraints.expand(),
+            child: Icon(Icons.account_circle_outlined, size: 75, color: Colors.indigo[100],)
+          );
+        } else if (snapshot.data.toString().isEmpty) {
+          print("Deboog: "+snapshot.data.toString().isEmpty.toString());
+          String url = snapshot.data.toString();
+          return Container(
+            child: Icon(Icons.account_circle_outlined, size: 75, color: Colors.indigo[100],)
+          );
+        } else {
+          String url = snapshot.data.toString();
+          print("Debag: "+snapshot.data.toString());
+          return Container(
+            constraints: BoxConstraints.expand(),
+            child: CachedNetworkImage(
+              width: 75,
+              height: 75,
+              imageUrl: url,
+              placeholder: (context,url) => Icon(Icons.account_circle_outlined, size: 75, color: Colors.indigo[100],),
+              errorWidget: (context,url,error) => Icon(Icons.account_circle_outlined, size: 75, color: Colors.indigo[100],),
+            )
+          );
+        }
+      }
+    );
   }
 }
