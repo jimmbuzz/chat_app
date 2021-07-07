@@ -20,6 +20,13 @@ class _HomeState extends State<Home> {
   // TODO: Add _isBannerAdReady
   bool _isBannerAdReady = false;
 
+  // TODO: Add _interstitialAd
+ InterstitialAd? _interstitialAd;
+
+  // TODO: Add _isInterstitialAdReady
+  bool _isInterstitialAdReady = false;
+
+
   @override
   void initState() {
     // TODO: Initialize _bannerAd
@@ -43,66 +50,61 @@ class _HomeState extends State<Home> {
 
     _bannerAd.load();
   }
-  
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.interstitialAdUnitId,
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          this._interstitialAd = ad;
+
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad) {
+              //_moveToHome();
+            },
+          );
+
+          _isInterstitialAdReady = true;
+        },
+        onAdFailedToLoad: (err) {
+          print('Failed to load an interstitial ad: ${err.message}');
+          _isInterstitialAdReady = false;
+        },
+      ),
+    );
+  }
   Widget build(BuildContext context) {
-
-    // @override
-    // void initState() {
-    //   // TODO: Initialize _bannerAd
-    //   _bannerAd = BannerAd(
-    //     adUnitId: AdHelper.bannerAdUnitId,
-    //     request: AdRequest(),
-    //     size: AdSize.banner,
-    //     listener: BannerAdListener(
-    //       onAdLoaded: (_) {
-    //         setState(() {
-    //           _isBannerAdReady = true;
-    //         });
-    //       },
-    //       onAdFailedToLoad: (ad, err) {
-    //         print('Failed to load a banner ad: ${err.message}');
-    //         _isBannerAdReady = false;
-    //         ad.dispose();
-    //       },
-    //     ),
-    //   );
-
-    //   _bannerAd.load();
-    // }
-    // @override
-    // void dispose() {
-    //   // TODO: Dispose a BannerAd object
-    //   _bannerAd.dispose();
-
-
-    //   super.dispose();
-    // }
-
     Future<InitializationStatus> _initGoogleMobileAds() {
       // TODO: Initialize Google Mobile Ads SDK
       return MobileAds.instance.initialize();
     }
     print("Add ready? "+_isBannerAdReady.toString());
     return Scaffold(
-        body: (_auth.currentUser == null)
-            ? Authenticate()
-            : Stack (children: [
-              HomeBuilder(),
-              if(_isBannerAdReady)
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Container(
-                    width: _bannerAd.size.width.toDouble(),
-                    height: _bannerAd.size.height.toDouble(),
-                    child: AdWidget(ad: _bannerAd),
-                  ),
-                ),]));
+      body: (_auth.currentUser == null)
+          ? Authenticate()
+          : Stack (children: [
+            HomeBuilder(),
+            if(_isBannerAdReady)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  width: _bannerAd.size.width.toDouble(),
+                  height: _bannerAd.size.height.toDouble(),
+                  child: AdWidget(ad: _bannerAd),
+                ),
+              ),
+          ])
+    );
     
   }
     @override
     void dispose() {
       // TODO: Dispose a BannerAd object
       _bannerAd.dispose();
+      
+    // TODO: Dispose an InterstitialAd object
+    _interstitialAd?.dispose();
+
       super.dispose();
     }
 }

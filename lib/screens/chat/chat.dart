@@ -1,7 +1,9 @@
+import 'package:chat_app/ads/ad_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/screens/search/add_user.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class Chat extends StatefulWidget {
   final String convId;
@@ -19,6 +21,12 @@ class _ChatState extends State<Chat> {
   TextEditingController messageEditingController = new TextEditingController();
 
   _ChatState({required this.convId, required this.convName});
+
+  InterstitialAd? _interstitialAd;
+
+  // TODO: Add _isInterstitialAdReady
+  bool _isInterstitialAdReady = false;
+
 
   Widget chatMessages(){
     return StreamBuilder<QuerySnapshot>(
@@ -67,8 +75,12 @@ class _ChatState extends State<Chat> {
     Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(
         builder: (BuildContext context) => UserSearch(convId: convId, convName: convName,)));
   }
+
+  
+
   @override
   Widget build(BuildContext context) {
+    _loadInterstitialAd();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.indigo[400],
@@ -78,7 +90,9 @@ class _ChatState extends State<Chat> {
           children: <Widget>[
             Text(convName),
             IconButton(
-              onPressed: () => addUser(context),
+              onPressed: () => _isInterstitialAdReady? 
+                _interstitialAd?.show() :
+                addUser(context),
               icon: Icon(Icons.add, size: 30)
             )
           ]
@@ -142,6 +156,38 @@ class _ChatState extends State<Chat> {
       ),
     );
   }
+  // TODO: Implement _loadInterstitialAd()
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.interstitialAdUnitId,
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          this._interstitialAd = ad;
+
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad) {
+              addUser(context);
+            },
+          );
+
+          _isInterstitialAdReady = true;
+        },
+        onAdFailedToLoad: (err) {
+          print('Failed to load an interstitial ad: ${err.message}');
+          _isInterstitialAdReady = false;
+        },
+      ),
+    );
+  }
+  @override
+    void dispose() {
+      
+    // TODO: Dispose an InterstitialAd object
+    _interstitialAd?.dispose();
+
+      super.dispose();
+    }
 }
 class MessageTile extends StatelessWidget {
   final String message;
