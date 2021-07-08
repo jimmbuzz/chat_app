@@ -50,6 +50,7 @@ class ChatRoomsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      key: Key(convName),
       onTap: (){
         Navigator.push(context, MaterialPageRoute(
           builder: (context) => Chat(

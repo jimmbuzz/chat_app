@@ -121,7 +121,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             icon: Icon(Icons.check),
                             onPressed: () async {
                               String pwd = pwdController.text.trim();
-                              if (pwd.isNotEmpty && pwd.length > 6) {
+                              if (pwd.isNotEmpty && pwd.length >= 6) {
                                 String b = await updatePassword(
                                     pwdController.text.trim());
                                 if (b.isNotEmpty) {

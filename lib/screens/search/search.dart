@@ -69,6 +69,7 @@ class _SearchState extends State<Search> {
           return AlertDialog(
             title: Text('Name your conversation'),
             content: TextField(
+              key: Key('Convo name'),
               controller: _textFieldController,
               decoration: InputDecoration(hintText: "Enter a name..."),
             ),
@@ -81,6 +82,7 @@ class _SearchState extends State<Search> {
                 },
               ),
               TextButton(
+                key: Key('Confirm butt'),
                 child: Text('Confirm'),
                 onPressed: () {
                   _firestore

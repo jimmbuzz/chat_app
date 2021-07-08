@@ -114,6 +114,7 @@ class _UserSearchState extends State<UserSearch> {
               ),
               Text(
                 userEmail,
+                key: Key(userEmail),
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 16
@@ -123,6 +124,7 @@ class _UserSearchState extends State<UserSearch> {
           ),
           Spacer(),
           GestureDetector(
+            key: Key('Add'),
             onTap: (){ 
               showDialog(context: context,
               builder: (BuildContext context) {
@@ -169,6 +171,7 @@ class _UserSearchState extends State<UserSearch> {
               child: Row(
                 children: [
                   Expanded(
+                    key: Key("search-field"),
                     child: TextField(
                       controller: searchEditingController,
                       decoration: InputDecoration(
@@ -182,6 +185,7 @@ class _UserSearchState extends State<UserSearch> {
                     ),
                   ),
                   GestureDetector(
+                    key: Key("Search Button"),
                     onTap: (){
                       if(searchEditingController.text.contains('@')){
                         isEmail = true;

@@ -87,6 +87,7 @@ class _ChatState extends State<Chat> {
           children: <Widget>[
             Text(convName),
             IconButton(
+              key: Key("add user"),
               onPressed: () => _isInterstitialAdReady? 
                 _interstitialAd?.show() :
                 addUser(context),
@@ -110,6 +111,7 @@ class _ChatState extends State<Chat> {
                 child: Row(
                   children: [
                     Expanded(
+                        key: Key("message-field"),
                         child: TextField(
                           controller: messageEditingController,
                           decoration: InputDecoration(
@@ -123,6 +125,7 @@ class _ChatState extends State<Chat> {
                         )),
                     SizedBox(width: 16,),
                     GestureDetector(
+                      key: Key('send'),
                       onTap: () {
                         addMessage();
                       },
@@ -228,6 +231,7 @@ class MessageTile extends StatelessWidget {
             )
         ),
         child: Text(message,
+            key: Key(message),
             textAlign: TextAlign.start,
             style: TextStyle(
             color: Colors.white,
