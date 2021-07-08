@@ -83,7 +83,7 @@ void main() {
       await driver.tap(regDnameField);
       await driver.enterText("fakename");
       await driver.tap(regEmailField);
-      await driver.enterText("another@email.com");
+      await driver.enterText("another@email.com"); //change when executing another attempt
       await driver.tap(regPassField);
       await driver.enterText("pppppp");
       await driver.tap(sub);
@@ -109,7 +109,7 @@ void main() {
       await driver.tap(regDnameField);
       await driver.enterText("No longer anon");
       await driver.tap(regEmailField);
-      await driver.enterText("anonsnew@email.com");
+      await driver.enterText("anonsnew@email.com"); //change when executing another attempt
       await driver.tap(regPassField);
       await driver.enterText("pppppp");
       await driver.tap(sub);
@@ -126,7 +126,7 @@ void main() {
       await driver.tap(signin);
       assert(signInPage != null);
       await driver.tap(emailField);
-      await driver.enterText("anonsnew@email.com");
+      await driver.enterText("anonsnew@email.com"); //change when executing another attempt
       await driver.tap(passField);
       await driver.enterText("pppppp");
       await driver.tap(sub);

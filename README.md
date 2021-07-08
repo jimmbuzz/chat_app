@@ -1,11 +1,21 @@
 # chat_app
 Raleigh Curns  
 CSC 4360 - Durham   
-6/30/2021  
-Assignment 2: friendly chat app  
+7/8/2021  
+Midterm: Let's talk money  
   
-A new Flutter project.
+A new Flutter project.  
 
 ## Android Installation
 
-Clone repository and build with flutter. Users may register with an email or Google account. Once signed in they may create a new chat with the 'plus' icon on the app bar. This allows them to search for a user with an email or a display name. After selecting a person to message the user then must name their conversation. Once named the user is taken back to their list of conversations. Conversations will display the last message sent. When a conversation is selected the user is taken to the chat screen of that conversation. The user may add additional people to the conversation with the 'plus' icon on the chat screen app bar. 
+Clone repository and run.  
+  
+If using a emulator you may need to downgrade to an AVD using api 28, or try a physical device. I experienced crashes and poor performane using api 30.
+
+## Web Installation 
+
+Due to google admob and web's incompability, use the main branch and launch with port: 5000.
+
+## Testing
+
+Open a console and navigate to the chat_app directory and run 'flutter drive --target=test_driver/app.dart'. If you want to run tests multiple times than you need to change the labeled fields in the "test_driver\app_test.dart" file in order to prevent conflicts with firebase.
