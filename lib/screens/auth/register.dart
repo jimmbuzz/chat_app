@@ -17,9 +17,21 @@ class _EmailSignUpState extends State <EmailSignUp>  {
   TextEditingController emailController = TextEditingController();
   TextEditingController displayNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  
 
   @override
   Widget build(BuildContext context) {
+    bool anon = false;
+    User? currentUser = _auth.currentUser;
+    if (currentUser != null) {
+      anon = currentUser.isAnonymous;
+      print("Debug 1" + anon.toString());
+    } else {
+      anon = false;
+      print("Debug 2" + anon.toString());
+    }
+    
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Sign Up"),
@@ -32,6 +44,7 @@ class _EmailSignUpState extends State <EmailSignUp>  {
             Padding(
               padding: EdgeInsets.all(20.0),
               child: TextFormField(
+                key: Key("dname-field"),
                 controller: displayNameController,
                 decoration: InputDecoration(
                   labelText: "Enter Display Name",
@@ -51,6 +64,7 @@ class _EmailSignUpState extends State <EmailSignUp>  {
             Padding(
               padding: EdgeInsets.all(20.0),
               child: TextFormField(
+                key: Key("email-field"),
                 controller: emailController,
                 decoration: InputDecoration(
                   labelText: "Enter Email Address",
@@ -72,6 +86,7 @@ class _EmailSignUpState extends State <EmailSignUp>  {
             Padding(
                 padding: EdgeInsets.all(20.0),
                 child: TextFormField(
+                  key: Key("pass-field"),
                   obscureText: true,
                   controller: passwordController,
                   decoration: InputDecoration(
@@ -102,7 +117,7 @@ class _EmailSignUpState extends State <EmailSignUp>  {
                         setState(() {
                           isLoading = true;
                         });
-                        sendToFB();
+                        sendToFB(anon);
                       }
                     },
                     child: Text('Submit'),
@@ -113,42 +128,83 @@ class _EmailSignUpState extends State <EmailSignUp>  {
       )
     );
   }
-  void sendToFB() {
-    _auth.createUserWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-        
-    ).then((result) async { 
-      _auth.currentUser!.updateDisplayName(displayNameController.text);
-      _firestore
-      .doc(_auth.currentUser!.uid).set({
-        'email' : emailController.text,
-        'display_name': displayNameController.text,
-        'regDateTime' : DateTime.now(),
-      }).then((res) {
-        isLoading = false;
-        Navigator.pushReplacement (
-          context,
-          MaterialPageRoute(builder: (context) => Home()),
-        );
+  void sendToFB(bool anon) {
+    if (anon) {
+      AuthCredential credential = EmailAuthProvider.credential(
+          email: emailController.text,
+          password: passwordController.text,
+      );//.then((result) async { 
+      _auth.currentUser!.linkWithCredential(credential).then((result) async {
+        _auth.currentUser!.updateDisplayName(displayNameController.text);
+        _firestore
+        .doc(_auth.currentUser!.uid).set({
+          'email' : emailController.text,
+          'display_name': displayNameController.text,
+          'regDateTime' : DateTime.now(),
+          'profile_pic' : '',
+        }).then((res) {
+          isLoading = false;
+          Navigator.pushReplacement (
+            context,
+            MaterialPageRoute(builder: (context) => Home()),
+          );
+        });
+      }).catchError((err) {
+        showDialog(context: context, 
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Error"),
+            content: Text(err.message),
+            actions: [
+              TextButton(
+                child: Text("Ok"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ]
+          );
+        });
       });
-    }).catchError((err) {
-      showDialog(context: context, 
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Error"),
-          content: Text(err.message),
-          actions: [
-            TextButton(
-              child: Text("Ok"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ]
-        );
+    } else {
+      _auth.createUserWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+          
+      ).then((result) async { 
+        _auth.currentUser!.updateDisplayName(displayNameController.text);
+        _firestore
+        .doc(_auth.currentUser!.uid).set({
+          'email' : emailController.text,
+          'display_name': displayNameController.text,
+          'regDateTime' : DateTime.now(),
+          'profile_pic' : '',
+        }).then((res) {
+          isLoading = false;
+          Navigator.pushReplacement (
+            context,
+            MaterialPageRoute(builder: (context) => Home()),
+          );
+        });
+      }).catchError((err) {
+        showDialog(context: context, 
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Error"),
+            content: Text(err.message),
+            actions: [
+              TextButton(
+                child: Text("Ok"),
+                onPressed: () {
+                  isLoading = false;
+                  Navigator.of(context).pop();
+                },
+              )
+            ]
+          );
+        });
       });
-    });
+    }
   }
   @override 
   void dispose() {

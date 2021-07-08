@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:chat_app/screens/auth/register.dart';
 import 'package:chat_app/screens/auth/sign_in.dart';
 import 'package:chat_app/screens/home/home.dart';
@@ -71,6 +72,16 @@ class _AuthenticateState extends State<Authenticate> {
                     child: Text('Sign in with Email'),
                   ),
             ),
+            Padding(
+              padding: EdgeInsets.all(10.0),
+                child: ElevatedButton(
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.indigo)),
+                    onPressed: () {
+                      signInAnon();
+                    },
+                    child: Text('Sign in Anonymously'),
+                  ),
+            ),
           ]),
       )
     );
@@ -94,22 +105,40 @@ class _AuthenticateState extends State<Authenticate> {
           .then((DocumentSnapshot docSnapshot) {
             if(docSnapshot.exists) {
                print("User has data!");
+               Navigator.pushReplacement (
+                  context,
+                  MaterialPageRoute(builder: (context) => Home()),
+                );
             } else {
               print("Creating user data");
               _firestore.doc(_auth.currentUser!.uid).set({
                 'email' : _auth.currentUser!.email,
                 'display_name' : _auth.currentUser!.displayName,
-                'isAdmin': false, 
                 'regDateTime' : DateTime.now(),
-              });
+                'profile_pic' : _auth.currentUser!.photoURL,
+              }).then((value) => Navigator.pushReplacement (
+                context,
+                MaterialPageRoute(builder: (context) => Home()),
+              ));
             }
           }
         );
-        print(result.user!.uid);
-      Navigator.pushReplacement (
-          context,
-          MaterialPageRoute(builder: (context) => Home()),
-        );
+        //print(result.user!.uid);
+      //Timer(Duration(milliseconds: 500), () =>
+     //);
+    });
+  }
+  void signInAnon() async {
+    _auth.signInAnonymously().then((result) {
+      _firestore.doc(_auth.currentUser!.uid).set({
+        'email' : '',
+        'display_name': 'Anon',
+        'regDateTime' : DateTime.now(),
+        'profile_pic' : '',
+      }).then((value) => Navigator.pushReplacement (
+        context,
+        MaterialPageRoute(builder: (context) => Home()),
+      ));
     });
   }
 }

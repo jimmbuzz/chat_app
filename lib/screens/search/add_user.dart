@@ -55,6 +55,7 @@ class _UserSearchState extends State<UserSearch> {
   Widget userList(){
     return haveUserSearched ? ListView.builder(
       shrinkWrap: true,
+      padding: const EdgeInsets.only(top: 80), 
       itemCount: searchResultSnapshot.docs.length,
         itemBuilder: (context, index){
         return userTile(
@@ -113,6 +114,7 @@ class _UserSearchState extends State<UserSearch> {
               ),
               Text(
                 userEmail,
+                key: Key(userEmail),
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 16
@@ -122,6 +124,7 @@ class _UserSearchState extends State<UserSearch> {
           ),
           Spacer(),
           GestureDetector(
+            key: Key('Add'),
             onTap: (){ 
               showDialog(context: context,
               builder: (BuildContext context) {
@@ -150,6 +153,7 @@ class _UserSearchState extends State<UserSearch> {
     bool isEmail = false;
     return Scaffold(
       appBar: AppBar(
+        title: Text("Add another user"),
         backgroundColor: Colors.indigo[400],
       ),
       body:
@@ -158,14 +162,16 @@ class _UserSearchState extends State<UserSearch> {
           child: CircularProgressIndicator(),
         ),
       ) :  Container(
-        child: Column(
+        child: Stack(
           children: [
+            userList(),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               color: Colors.indigo[200],
               child: Row(
                 children: [
                   Expanded(
+                    key: Key("search-field"),
                     child: TextField(
                       controller: searchEditingController,
                       decoration: InputDecoration(
@@ -179,6 +185,7 @@ class _UserSearchState extends State<UserSearch> {
                     ),
                   ),
                   GestureDetector(
+                    key: Key("Search Button"),
                     onTap: (){
                       if(searchEditingController.text.contains('@')){
                         isEmail = true;
@@ -208,7 +215,7 @@ class _UserSearchState extends State<UserSearch> {
                 ],
               ),
             ),
-            userList()
+            
           ],
         ),
       ),

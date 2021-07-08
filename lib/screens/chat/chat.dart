@@ -20,6 +20,7 @@ class _ChatState extends State<Chat> {
 
   _ChatState({required this.convId, required this.convName});
 
+
   Widget chatMessages(){
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore
@@ -78,6 +79,7 @@ class _ChatState extends State<Chat> {
           children: <Widget>[
             Text(convName),
             IconButton(
+              key: Key("add user"),
               onPressed: () => addUser(context),
               icon: Icon(Icons.add, size: 30)
             )
@@ -99,6 +101,7 @@ class _ChatState extends State<Chat> {
                 child: Row(
                   children: [
                     Expanded(
+                        key: Key("message-field"),
                         child: TextField(
                           controller: messageEditingController,
                           decoration: InputDecoration(
@@ -112,6 +115,7 @@ class _ChatState extends State<Chat> {
                         )),
                     SizedBox(width: 16,),
                     GestureDetector(
+                      key: Key('send'),
                       onTap: () {
                         addMessage();
                       },
@@ -142,6 +146,10 @@ class _ChatState extends State<Chat> {
       ),
     );
   }
+  @override
+    void dispose() {
+      super.dispose();
+    }
 }
 class MessageTile extends StatelessWidget {
   final String message;
@@ -185,6 +193,7 @@ class MessageTile extends StatelessWidget {
             )
         ),
         child: Text(message,
+            key: Key(message),
             textAlign: TextAlign.start,
             style: TextStyle(
             color: Colors.white,

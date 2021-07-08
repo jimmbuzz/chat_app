@@ -10,7 +10,7 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-
+  //_SearchState();
   DatabaseMethods databaseMethods = new DatabaseMethods();
   TextEditingController searchEditingController = new TextEditingController();
   late QuerySnapshot searchResultSnapshot;
@@ -48,9 +48,9 @@ class _SearchState extends State<Search> {
     }
   }
   Widget userList(){
-    print("Length: "+searchResultSnapshot.docs.length.toString());
     return haveUserSearched ? ListView.builder(
       shrinkWrap: true,
+      padding: const EdgeInsets.only(top: 80),
       itemCount: searchResultSnapshot.docs.length,
         itemBuilder: (context, index){
         return userTile(
@@ -69,6 +69,7 @@ class _SearchState extends State<Search> {
           return AlertDialog(
             title: Text('Name your conversation'),
             content: TextField(
+              key: Key('Convo name'),
               controller: _textFieldController,
               decoration: InputDecoration(hintText: "Enter a name..."),
             ),
@@ -81,6 +82,7 @@ class _SearchState extends State<Search> {
                 },
               ),
               TextButton(
+                key: Key('Confirm butt'),
                 child: Text('Confirm'),
                 onPressed: () {
                   _firestore
@@ -117,6 +119,7 @@ class _SearchState extends State<Search> {
               ),
               Text(
                 userEmail,
+                key: Key(userEmail),
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 16
@@ -126,6 +129,7 @@ class _SearchState extends State<Search> {
           ),
           Spacer(),
           GestureDetector(
+            key: Key('Message'),
             onTap: (){
               createChat(uid);
             },
@@ -151,6 +155,7 @@ class _SearchState extends State<Search> {
     bool isEmail = false;
     return Scaffold(
       appBar: AppBar(
+        title: Text("Start a conversation"),
         backgroundColor: Colors.indigo[400],
       ),
       body:
@@ -171,6 +176,7 @@ class _SearchState extends State<Search> {
                 children: [
                   Expanded(
                     child: TextField(
+                      key: Key("search-field"),
                       controller: searchEditingController,
                       decoration: InputDecoration(
                         hintText: "search username or email...",
@@ -183,6 +189,7 @@ class _SearchState extends State<Search> {
                     ),
                   ),
                   GestureDetector(
+                    key: Key("Search Button"),
                     onTap: (){
                       if(searchEditingController.text.contains('@')){
                         isEmail = true;
