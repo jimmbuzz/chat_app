@@ -31,6 +31,7 @@ class _SignInState extends State<SignIn> {
             Padding(
               padding: EdgeInsets.all(20),
               child: TextFormField(
+                key: Key("email-field"),
                 controller: emailController,
                 decoration: InputDecoration(
                   labelText: "Enter Email Address",
@@ -51,6 +52,7 @@ class _SignInState extends State<SignIn> {
             Padding(
               padding: EdgeInsets.all(20),
               child: TextFormField(
+                key: Key("pass-field"),
                 obscureText: true,
                 controller: passwordController,
                 decoration: InputDecoration(
@@ -81,6 +83,8 @@ class _SignInState extends State<SignIn> {
                         isLoading = true;
                       });
                       loginFB();
+                    } else {
+                      isLoading = false;
                     }
                   },
                   child: Text('Submit'),
@@ -110,11 +114,12 @@ class _SignInState extends State<SignIn> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text("Error"),
-              content: Text(err.message),
+              content: Text(err.message, key:Key("err")),
               actions: [
                 ElevatedButton(
                   child: Text("Ok"),
                   onPressed: () {
+                    isLoading = false;
                     Navigator.of(context).pop();
                   },
                 )

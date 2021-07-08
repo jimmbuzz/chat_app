@@ -44,6 +44,7 @@ class _EmailSignUpState extends State <EmailSignUp>  {
             Padding(
               padding: EdgeInsets.all(20.0),
               child: TextFormField(
+                key: Key("dname-field"),
                 controller: displayNameController,
                 decoration: InputDecoration(
                   labelText: "Enter Display Name",
@@ -63,6 +64,7 @@ class _EmailSignUpState extends State <EmailSignUp>  {
             Padding(
               padding: EdgeInsets.all(20.0),
               child: TextFormField(
+                key: Key("email-field"),
                 controller: emailController,
                 decoration: InputDecoration(
                   labelText: "Enter Email Address",
@@ -84,6 +86,7 @@ class _EmailSignUpState extends State <EmailSignUp>  {
             Padding(
                 padding: EdgeInsets.all(20.0),
                 child: TextFormField(
+                  key: Key("pass-field"),
                   obscureText: true,
                   controller: passwordController,
                   decoration: InputDecoration(
@@ -193,6 +196,7 @@ class _EmailSignUpState extends State <EmailSignUp>  {
               TextButton(
                 child: Text("Ok"),
                 onPressed: () {
+                  isLoading = false;
                   Navigator.of(context).pop();
                 },
               )

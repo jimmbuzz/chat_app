@@ -117,6 +117,7 @@ class _SearchState extends State<Search> {
               ),
               Text(
                 userEmail,
+                key: Key(userEmail),
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 16
@@ -126,6 +127,7 @@ class _SearchState extends State<Search> {
           ),
           Spacer(),
           GestureDetector(
+            key: Key('Message'),
             onTap: (){
               createChat(uid);
             },
@@ -172,6 +174,7 @@ class _SearchState extends State<Search> {
                 children: [
                   Expanded(
                     child: TextField(
+                      key: Key("search-field"),
                       controller: searchEditingController,
                       decoration: InputDecoration(
                         hintText: "search username or email...",
@@ -184,6 +187,7 @@ class _SearchState extends State<Search> {
                     ),
                   ),
                   GestureDetector(
+                    key: Key("Search Button"),
                     onTap: (){
                       if(searchEditingController.text.contains('@')){
                         isEmail = true;

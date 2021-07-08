@@ -114,6 +114,7 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.indigo[400],
         leading: Builder(builder: (BuildContext context) {
           return new GestureDetector(
+            key: Key('drawer'),
             onTap: (){
               Scaffold.of(context).openDrawer();
             },
@@ -129,6 +130,7 @@ class _HomeState extends State<Home> {
           children: <Widget>[
             showDisplayName(),
             IconButton(
+                key: Key("New Convo"),
                 onPressed: () => _isRewardedAdReady ? 
                 _rewardedAd.show(onUserEarnedReward: (_, reward) {createNewConvo(context);}) : 
                 createNewConvo(context),
@@ -138,6 +140,7 @@ class _HomeState extends State<Home> {
         )
       ),
       drawer: Drawer(
+        //key: Key('drawer'),
         child: ListView(
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
